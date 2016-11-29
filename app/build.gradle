@@ -1,18 +1,38 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.github.triplet.play'
+
+final exampleVersionCode = hasProperty('version_code') ? property('version_code').toInteger() : 1
+final exampleVersionName = hasProperty('version_name') ? '0.1.0.' + property('version_name') : '0.1.0.0'
+
+final exampleStorePassword = hasProperty('keystore_password') ? property('keystore_password') : ''
+final exampleKeyAlias = hasProperty('key_alias') ? property('key_alias') : ''
+final exampleKeyPassword = hasProperty('key_password') ? property('key_password') : ''
+final exampleStoreFile = hasProperty('key_file') ? property('key_file') : ''
+final examplePlayJson = hasProperty('play_json') ? property('play_json') : ''
 
 android {
     compileSdkVersion 25
     buildToolsVersion "24.0.1"
+
+    signingConfigs {
+        src {
+            storeFile file(exampleStoreFile)
+            storePassword exampleStorePassword
+            keyAlias exampleKeyAlias
+            keyPassword exampleKeyPassword
+        }
+    }
     defaultConfig {
         applicationId "com.sjn.demo.bitrisedemo"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode exampleVersionCode
+        versionName exampleVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.src
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -26,4 +46,10 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
+}
+
+
+play {
+    track = 'alpha'
+    jsonFile = file(examplePlayJson)
 }
